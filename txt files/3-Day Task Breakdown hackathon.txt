@@ -1,0 +1,46 @@
+3-Day Task Breakdown (solo)
+Day 1 — Foundation: Vision Node + Tabular Node (independent, testable in isolation)
+Morning
+
+* Repo scaffold: `/vision_pipeline`, `/tabular_analytics`, `/agent_workflow`, `/frontend`
+* Find a pretrained plant-disease model on Hugging Face (search "plant disease ViT" / "PlantVillage") rather than training from scratch — fine-tune only if the pretrained model's classes don't match your demo crops
+* Load it in Colab, run inference on sample leaf images, define a strict Pydantic schema for output: `disease_class`, `confidence_score`, `attention_matrix`
+Afternoon
+
+* Implement ViT attention rollout (or Grad-CAM) to produce a heatmap overlay — this is a known technique, budget ~2-3 hrs to get it looking demo-good
+* Decide your Tabular Node framing now: either (a) synthetic risk labels from a domain heuristic (humidity + rainfall + N/P/K thresholds → risk %), or (b) repurpose the Kaggle crop-recommendation dataset as an "environmental suitability/stress score." Pick one and write down the justification for your pitch — judges will ask.
+Evening
+
+* Train XGBoost on your chosen data, wire up SHAP, output schema: `14_day_risk_pct`, `top_3_environmental_stressors`
+* Freeze both node interfaces (input/output JSON) — this contract is what lets Day 2 go fast
+Day 2 — Orchestration: LangGraph + HITL + Localization
+Morning
+
+* Build the LangGraph state graph: Vision Node → Analytical Node → Pathologist Agent + Climate Agent (interpret each JSON) → HITL Gate
+* Wire Groq API calls for the interpretive agents
+Midday
+
+* Implement the HITL conditional edge: confidence < 75% → route to "Ambiguous/Review" terminal state instead of continuing to action-plan generation
+Afternoon
+
+* Translation agent: NLLB-200-distilled-600M (fits comfortably on T4, or even CPU) to translate the final action plan
+* gTTS for audio synthesis of the translated text
+Evening
+
+* PDF report generation (reportlab/fpdf) pulling in the heatmap image, SHAP chart, and final recommendation
+* Run the full pipeline end-to-end on 2-3 test cases, fix integration bugs — budget real time here, this is where things break
+Day 3 — Frontend, Demo Polish, Pitch
+Morning
+
+* Build UI fast with Streamlit or Gradio rather than React/custom frontend — as a solo dev this saves you a day and still looks credible for a demo. Image upload + tabular input form + a log panel that streams each agent's intermediate output as it runs (this satisfies your "live logs terminal" hook cheaply)
+Midday
+
+* Side-by-side render: attention heatmap next to SHAP bar chart — this is your 30-second judge-hook, worth the polish time
+Afternoon
+
+* Edge case testing (low-confidence path, missing data, bad image), error handling so nothing crashes live
+Evening
+
+* Record a backup demo video (in case live demo/GPU/API hiccups during judging)
+* Prepare the pitch: problem → architecture diagram → live demo → why it's technically hard (fusion + XAI + HITL) → impact (localization/accessibility)
+

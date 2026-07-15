@@ -1,0 +1,17 @@
+streamlit
+pillow
+matplotlib
+numpy
+pydantic
+langgraph
+# The following are needed for REAL (non-fallback) inference — install alongside
+# vision_pipeline/ and tabular_analytics/ once those are in the same repo:
+# transformers
+# torch
+# xgboost
+# shap
+# scikit-learn
+# pandas
+# sentencepiece   (NLLB tokenizer)
+# gTTS
+# groq

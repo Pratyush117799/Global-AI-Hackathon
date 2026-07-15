@@ -1,0 +1,11 @@
+Confirmed fixed — real XGBoost/SHAP now runs correctly (a dry/mild input correctly produces 2.74% risk with all-negative SHAP contributions, nothing like the fallback's 56.83%). Here are the files:Four files, here's what each does:
+
+**`vision_pipeline/inference.py`** — new. Packages your tested `groq.ipynb` ViT + attention-rollout logic into an importable module matching the exact contract `pipeline.py` expects (`run_vision_node(image) -> VisionNodeOutput`). This didn't exist before — `pipeline.py` was trying to import it and silently falling back to demo data every single time, including in runs that looked "real."
+
+**`tabular_analytics/inference.py`** — bug fix. It was loading `model.json`/`explainer.pkl` using paths relative to whatever the *current working directory* happened to be, instead of relative to the file itself. Worked by accident when I originally tested it from inside `tabular_analytics/`, silently breaks the moment it's invoked from `pipeline.py` in `/frontend` (which is exactly how it's actually used). Fixed with `os.path.dirname(os.path.abspath(__file__))`.
+
+**Two `__init__.py` files** — both `vision_pipeline/` and `tabular_analytics/` were missing these, which `pipeline.py`'s package-style imports (`from vision_pipeline.inference import ...`) require.
+
+I verified the tabular fix with a fresh input (dry/mild conditions → correctly computed 2.74% risk with real SHAP values, nothing like the fallback's hardcoded 56.83%) — confirms the real XGBoost path is actually running now, not silently falling back.
+
+Still in progress on my end: the Groq/NLLB/gTTS pieces (need live network I don't have here) and a consolidated master notebook/checklist to run the full real stack in one Colab session. Want me to keep going and finish that, or is this enough for now?
