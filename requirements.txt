@@ -1,0 +1,37 @@
+# Agrospheric AI — full project requirements
+# Install: pip install -r requirements.txt
+
+# --- Core pipeline / orchestration ---
+langgraph
+pydantic
+numpy
+pandas
+
+# --- Vision Node (ViT + attention rollout) ---
+torch
+transformers
+
+# --- Tabular / Analytical Node (XGBoost + SHAP) ---
+xgboost
+shap
+scikit-learn
+
+# --- Translation Agent (NLLB-200) ---
+sentencepiece
+
+# --- Audio Agent (gTTS narration) ---
+gTTS
+
+# --- Pathologist / Climate Agents (Groq LLM calls) ---
+groq
+
+# --- PDF Report generation ---
+reportlab
+pillow>=10   # must include raqm text-shaping support for correct non-Latin script
+             # rendering (Devanagari conjuncts, Arabic RTL/joining, etc.) -- confirmed
+             # bundled in the standard PyPI wheel (Pillow 12.1.1), no extra apt packages
+             # needed on Linux
+matplotlib   # heatmap + SHAP chart rendering
+
+# --- Streamlit frontend ---
+streamlit
