@@ -9,3 +9,7 @@ __pycache__/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Large videos exceeding GitHub file limits
+Live demo.mp4
+
